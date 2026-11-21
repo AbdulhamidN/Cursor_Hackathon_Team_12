@@ -1,0 +1,20 @@
+@import 'tailwindcss';
+
+/* Design tokens. Each one becomes a utility, e.g. `bg-coffee-50` or `text-leaf-700`. */
+@theme {
+  --color-coffee-50: #fbf7f2;
+  --color-coffee-100: #f3e9dc;
+  --color-coffee-200: #e4d1b9;
+  --color-coffee-500: #a0704a;
+  --color-coffee-700: #6b4226;
+  --color-coffee-900: #2f1b10;
+
+  --color-leaf-100: #e2f2e7;
+  --color-leaf-700: #23643e;
+}
+
+@layer base {
+  body {
+    @apply bg-coffee-50 text-coffee-900 antialiased;
+  }
+}

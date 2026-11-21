@@ -1,0 +1,62 @@
+---
+description: Ethiopian Coffee Buy project rules - module ownership, shared-file restrictions, coding, API and Git conventions
+alwaysApply: true
+---
+
+# Ethiopian Coffee Buy project rules
+
+Monorepo: `apps/web` (React, Vite, Tailwind), `apps/api` (Express, Mongoose), `packages/*` (`@ecb/shared`, `@ecb/contracts`, `@ecb/validation`, `@ecb/config`). Full rules are in `AGENTS.md`; details in `docs/`.
+
+## Module ownership
+
+Four modules: `users` (1), `marketplace` (2), `transactions` (3), `traceability` (4). A module owns only:
+
+- `apps/api/src/modules/<module>/**`
+- `apps/web/src/modules/<module>/**`
+- `packages/contracts/src/modules/<module>.ts`
+- `packages/validation/src/modules/<module>.ts`
+- `docs/modules/module-N-*.md`
+
+Work inside one module's paths. If the task does not say which module, ask before editing.
+
+## Shared-file restrictions
+
+Everything else is shared: root config, `packages/config`, `packages/shared`, `apps/api/src/{app.ts,server.ts,config,common,health,types,modules/index.ts}`, `apps/web/src/{main.tsx,index.css,app,shared}`, `.github`, top-level docs.
+
+- Do not edit shared files or another module's files during feature work. Stop and tell the user a shared change is needed.
+- Allowed with a heads-up: adding a dependency (`npm install <pkg> --workspace @ecb/api`), adding an env variable to both `.env.example` and `apps/api/src/config/env.ts`.
+
+## Boundaries
+
+```ts
+import { requireAuth } from '../users'; // OK: another module's public entry
+import { User } from '../users/user.model'; // lint error: another module's private file
+```
+
+- Never export Mongoose models from a module's `index`. Reference other modules' data by id.
+- API routes go only under the prefixes reserved in `@ecb/contracts/<module>`.
+
+## Coding conventions
+
+- Strict TypeScript, no `any`, named exports, `import type` for types, no path aliases.
+- `PascalCase.tsx` for components, `kebab-case.ts` otherwise, tests as `*.test.ts(x)` beside the code.
+- No placeholder files or empty folders.
+- API: `sendSuccess(res, data)` for success, `throw AppError.notFound(...)` for failure, Zod schemas from `@ecb/validation` for all input, config from `env` not `process.env`.
+- Web: Tailwind classes, `apiRequest` from `apps/web/src/shared/api/client.ts`, add pages via the module's `index.tsx` routes.
+
+## API conventions
+
+- Routes under `/api/v1`, plural kebab-case resources.
+- Envelope: `{ success: true, data, meta? }` or `{ success: false, error: { code, message, details? } }`.
+- Ids are strings named `id`; dates are ISO 8601 UTC; lists take `?page=&limit=`.
+
+## Secrets
+
+- Secrets only in the git-ignored root `.env`. Never print, commit or hard-code them.
+- Gemini is called from `apps/api` only. No Gemini SDK and no secret `VITE_` variables in `apps/web`.
+
+## Git
+
+- Branches `m1/<topic>` to `m4/<topic>` or `shared/<topic>`; Conventional Commits with module scope.
+- Run `npm run check` before finishing a task.
+- Do not commit, push or open pull requests unless the user asks.

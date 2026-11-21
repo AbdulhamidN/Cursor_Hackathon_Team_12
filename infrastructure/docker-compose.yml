@@ -1,0 +1,25 @@
+# Local development services. Only needed if MongoDB is not already installed
+# on your machine and you are not using MongoDB Atlas.
+#
+#   Start:  docker compose -f infrastructure/docker-compose.yml up -d
+#   Stop:   docker compose -f infrastructure/docker-compose.yml down
+#   Reset:  docker compose -f infrastructure/docker-compose.yml down --volumes
+name: ethiopian-coffee-buy
+
+services:
+  mongo:
+    image: mongo:8.0
+    restart: unless-stopped
+    ports:
+      # Reachable from this machine only: the development database has no password.
+      - '127.0.0.1:27017:27017'
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ['CMD', 'mongosh', '--quiet', '--eval', "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mongo-data:

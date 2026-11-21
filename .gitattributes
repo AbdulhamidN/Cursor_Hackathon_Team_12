@@ -1,0 +1,9 @@
+# Store text files with LF endings so Windows and non-Windows machines produce identical diffs.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.ico binary
+*.pdf binary

@@ -1,0 +1,16 @@
+{
+  "name": "@ecb/shared",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Framework-free domain constants and types shared by the web and API apps.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@ecb/config": "*"
+  }
+}
